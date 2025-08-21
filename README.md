@@ -71,7 +71,7 @@ flowchart TB
 
 ## 📂 레포지토리 구성
 
-- **[mindtrack-frontend](https://github.com/4-nyang-dan/mindtrack-frontend)**  
+- **[mindtrack-frontend](https://github.com/4-nyang-dan/mindtrack-front)**  
   Electron + React 기반 UI  
   - 로그인/회원가입, 화면 캡처, SSE UI 표시  
   - 프론트에서 1차 SSIM 필터링
@@ -112,7 +112,11 @@ flowchart TB
 ---
 
 ## 🔗 세부 문서 링크
-[Frontend README]: https://github.com/4-nyang-dan/mindtrack-frontend#readme
+- [Frontend README]
+- [Backend README]
+- [AI Server README]
+  
+[Frontend README]: https://github.com/4-nyang-dan/mindtrack-front#readme
 [Backend README]:  https://github.com/4-nyang-dan/mindtrack-backend#readme
 [AI Server README]: https://github.com/4-nyang-dan/mindtrack-ai#readme
 
