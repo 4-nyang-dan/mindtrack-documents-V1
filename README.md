@@ -71,18 +71,18 @@ flowchart TB
 
 ## 📂 레포지토리 구성
 
-- **[mindtrack-frontend](./frontend/README.md)**  
+- **[mindtrack-frontend](https://github.com/4-nyang-dan/mindtrack-frontend)**  
   Electron + React 기반 UI  
   - 로그인/회원가입, 화면 캡처, SSE UI 표시  
   - 프론트에서 1차 SSIM 필터링
 
-- **[mindtrack-backend](./backend/README.md)**  
+- **[mindtrack-backend](https://github.com/4-nyang-dan/mindtrack-backend)**  
   Spring Boot 기반 API 서버  
   - JWT 인증  
   - 스크린샷 샘플링(dHash/SSIM) + Redis 캐시  
   - Postgres NOTIFY + SSE Hub  
 
-- **[mindtrack-ai](./ai/README.md)**  
+- **[mindtrack-ai](https://github.com/4-nyang-dan/mindtrack-ai)**  
   FastAPI 기반 AI 분석 서버  
   - OCR + PII 마스킹  
   - 이미지 설명, Embedding 저장/검색  
@@ -112,9 +112,9 @@ flowchart TB
 ---
 
 ## 🔗 세부 문서 링크
-- [Frontend README](./frontend/README.md)  
-- [Backend README](./backend/README.md)  
-- [AI Server README](./ai/README.md)  
+[Frontend README]: https://github.com/4-nyang-dan/mindtrack-frontend#readme
+[Backend README]:  https://github.com/4-nyang-dan/mindtrack-backend#readme
+[AI Server README]: https://github.com/4-nyang-dan/mindtrack-ai#readme
 
 ---
 
