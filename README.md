@@ -1,6 +1,6 @@
 # MindTrack – Full System
 
-![Architecture Overview](./docs/architecture.png)
+![Architecture Overview](./docs/architecture_V2.png)
 
 > **MindTrack** 은 화면 캡처 → 이미지 샘플링/캐싱 → AI 분석 → 실시간 질문/답변 제공까지 이어지는 **동적 화면 맥락 분석 기반 예측형 AI 에이전트**입니다.  
 > 프론트엔드(Electron), 백엔드(Spring Boot), AI 서버(FastAPI)로 구성되어 있으며, PostgreSQL · Redis · OpenAI API 등을 통합적으로 활용합니다.
