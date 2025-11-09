@@ -3,39 +3,33 @@
 ![Architecture Overview](./docs/architecture.png)
 
 > **MindTrack** 은 화면 캡처 → 이미지 샘플링/캐싱 → AI 분석 → 실시간 질문/답변 제공까지 이어지는 **동적 화면 맥락 분석 기반 예측형 AI 에이전트**입니다.  
-> 프론트엔드(Electron), 백엔드(Spring Boot), AI 서버(FastAPI)로 구성되어 있으며, PostgreSQL·Redis·OpenAI API 등을 통합적으로 활용합니다.
+> 프론트엔드(Electron), 백엔드(Spring Boot), AI 서버(FastAPI)로 구성되어 있으며, PostgreSQL · Redis · OpenAI API 등을 통합적으로 활용합니다.
 
 ---
 
 ## 📚 목차
-- [📌 프로젝트 개요](#-프로젝트-개요)
-- [🖼 아키텍처 개요](#-아키텍처-개요)
-- [📂 레포지토리 구성](#-레포지토리-구성)
-- [⚙️ 실행 흐름](#️-실행-흐름)
-- [🔗 세부 문서 링크](#-세부-문서-링크)
-- [🚀 실행 방법](#-실행-방법)
+- [📌 프로젝트 개요](#프로젝트-개요)
+- [🖼 아키텍처 개요](#아키텍처-개요)
+- [🧠 핵심 기술](#핵심-기술)
+- [🧭 서비스 구성 & UX](#서비스-구성--ux)
+- [🔐 보안 & 개인정보 처리](#보안--개인정보-처리)
+- [🏢 비즈니스 모델 & 오픈소스 전략](#비즈니스-모델--오픈소스-전략)
+- [📂 레포지토리 구성](#레포지토리-구성)
+- [⚙️ 실행 흐름](#실행-흐름)
+- [🚀 실행 방법](#실행-방법)
 
 ---
 
 ## 📌 프로젝트 개요
-- **Frontend (Electron + React)**  
-  - 사용자 로그인/회원가입  
-  - 화면 캡처 시작/중지  
-  - 프론트 1차 SSIM 필터 → 백엔드 업로드  
-  - SSE 구독 → 질문/답변 UI 표시  
 
-- **Backend (Spring Boot)**  
-  - JWT 인증  
-  - 스크린샷 샘플링 (dHash/SSIM, Redis 캐시)
-  - Postgres LISTEN/NOTIFY + SSE publish
+### 왜 MindTrack 인가? (문제 인식)
+- **언어 의존적 AI 상호작용의 한계**: 기존 챗봇은 사용자가 화면 상황을 말로 풀어 설명해야 함 → **맥락 왜곡·정보 손실** 발생  
+- **디지털 취약계층 접근성 문제**: 시각적 UI를 언어로 설명해야 하는 구조 자체가 **사용 장벽**이 됨  
+- **‘행동 데이터’의 부재**: 화면만 이해해서는 부족. 사용자의 **의도/다음 행동**을 데이터화하고 최적화해야 함
 
-- **AI Server (FastAPI)**  
-  - 이미지 업로드 파이프라인  
-  - OCR + PII 마스킹  
-  - 이미지 설명 생성(OpenAI)  
-  - Embedding + 벡터DB 검색  
-  - 행동/질문 예측 및 QA 응답
-  - 분석 결과 DB 저장
+### MindTrack의 목표
+- **화면을 이해**하고 **행동을 예측/가이드**하여, 누구나 **목표를 효율적으로 수행**하도록 돕는 것
+- **일반 사용자 모드**와 **취약계층 모드**를 제공하여, 상황·능력에 맞춘 맞춤형 경험을 지원
 
 ---
 
@@ -43,7 +37,6 @@
 
 ```mermaid
 flowchart TB
-
   R[Renderer - React]
   P[Preload - contextBridge]
   M[Main - Electron]
@@ -65,9 +58,89 @@ flowchart TB
   DB -->|notify| BE
 
   BE -->|publish| M
-  M -->|IPC - suggestions / heartbeat  / error| R
+  M -->|IPC - suggestions / heartbeat / error| R
+
 ```
 ---
+
+## 🧠 핵심 기술
+
+### 1) Adaptive Image Sampling (중복 제거·비용 절감)
+
+* 구조적 유사도(SSIM)·이미지 해시(dHash) 로 연속 스크린샷의 중복 프레임을 실시간 필터링
+* SSIM < 임계값(예: 0.95) 인 경우만 추출·전송 → 분석 비용과 지연 최소화
+
+### 2) 수집-분석 비동기 병렬 파이프라인
+
+* 사용자별 윈도우(예: 15초) 로 프레임 수집 → Redis 큐 기반 분석 파이프라인 병렬 처리
+* 수집과 분석의 동시 진행으로 체감 응답성을 확보
+
+### 3) Multi-Agent System (화면이해 → 계획 → 액션가이드)
+
+```mermaid
+flowchart LR
+  A[Adaptive Sampler] --> B[UI Analysis Agent]
+  B --> C[Image Captioning LLM]
+  C --> D[Planner Agent (Ontology)]
+  D --> E[Screen Guide Agent]
+  E --> F[(Vector DB Memory)]
+  F --> D
+  D --> G[Workflow Graph / Visualization]
+```
+* **UI Analysis Agent:** YOLOX(E2E 객체감지), EasyOCR로 UI 요소·텍스트 추출
+* **Image Captioning LLM:** 화면 요약·상태 기술
+* **Planner Agent:** 온톨로지 기반으로 목표 달성 경로·세부 단계 설계
+    * *예시 온톨로지 축:* Medium(매개: 정부24) / Action(행동: 로그인, 이름 입력) / Subject(대상: 간편인증)
+* **Screen Guide Agent:** 현재 단계의 다음 행동과 눌러야 할 UI를 제안(바운딩 박스·툴팁)
+
+### 4) 온톨로지 기반 최적화 (일관된 행동 데이터 축적)
+
+* 행동 임베딩과 유사도·클러스터링으로 반복 과업 최적 루트와 병목 지점을 발견
+* 축적된 온톨로지 → 조직 지식 자산화 및 개인화 추천 고도화
+
+---
+
+## 🧭 서비스 구성 & UX
+
+### 일반 사용자 모드 (업무 보조 / 목표 수행)
+
+* 현재 화면 상황 자동 이해 → 예상 질문 선제 제시 → 화면 맥락형 Q&A
+* 목표 설정/예측 → 세부 계획 생성 → 단계별 가이드(검색증강 + 화면기반 안내)
+* 진행 이력 시각화 및 요약 제공
+
+### 디지털 취약계층 모드 (접근성 특화)
+
+* 음성/텍스트로 목표 설정, 시각적 가이드(바운딩 박스) 와 음성 안내(TTS) 제공
+* “마우스만 따라가면” 가능한 친절한 단계별 안내 UX
+
+---
+
+## 🔐 보안 & 개인정보 처리
+
+* 로컬(사용자 PC) 에서 우선 PII 탐지 후 블러 처리 → 외부 API 전송 전에 민감정보 최소화
+* 사용 OSS 예: presidio-analyzer, pytesseract/EasyOCR, 사내 규칙 기반 마스킹 파이프라인
+* 모듈별 라이선스 준수 및 데이터 거버넌스 기준 문서화
+
+---
+
+## 🏢 비즈니스 모델 & 오픈소스 전략
+
+### 비즈니스 모델
+
+* **B2C (Freemium SaaS):** 기본 무료, 프리미엄 구독으로 고급 기능 제공
+* **B2B (On-prem / Private SaaS):** 기업 환경(보안·규제) 고려한 사내 구축형 제공
+* **B2G (공공·지자체 협력):** 디지털 취약계층 대상 접근성 향상 서비스 제공, 교육 프로그램 연계
+
+### 오픈소스 전략
+
+* Open Core 로 공공성·지속가능성 균형
+* 투명 거버넌스·명확한 컨트리뷰션 정책 으로 신뢰 확보
+
+### 용도별 라이선스 차등(예시)
+
+* **B2C:** Apache-2.0
+* **B2B:** LGPLv3
+* **B2G:** MIT / AGPL-3.0(YOLO 사용 시)
 
 ## 📂 레포지토리 구성
 
