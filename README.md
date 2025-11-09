@@ -77,15 +77,6 @@ flowchart TB
 
 ### 3) Multi-Agent System (화면이해 → 계획 → 액션가이드)
 
-```mermaid
-flowchart LR
-  A[Adaptive Sampler] --> B[UI Analysis Agent]
-  B --> C[Image Captioning LLM]
-  C --> D[Planner Agent (Ontology)] --> E[Screen Guide Agent]
-  E --> F[(Vector DB Memory)]
-  F --> D
-  D --> G[Workflow Graph / Visualization]
-```
 * **UI Analysis Agent:** YOLOX(E2E 객체감지), EasyOCR로 UI 요소·텍스트 추출
 * **Image Captioning LLM:** 화면 요약·상태 기술
 * **Planner Agent:** 온톨로지 기반으로 목표 달성 경로·세부 단계 설계
