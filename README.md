@@ -81,8 +81,7 @@ flowchart TB
 flowchart LR
   A[Adaptive Sampler] --> B[UI Analysis Agent]
   B --> C[Image Captioning LLM]
-  C --> D[Planner Agent (Ontology)]
-  D --> E[Screen Guide Agent]
+  C --> D[Planner Agent (Ontology)] --> E[Screen Guide Agent]
   E --> F[(Vector DB Memory)]
   F --> D
   D --> G[Workflow Graph / Visualization]
