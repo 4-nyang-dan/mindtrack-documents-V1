@@ -64,7 +64,7 @@ flowchart TB
 ---
 
 ## 🧠 핵심 기술
-![Adaptive Image Sampling overview](./docs/Adaptive Image Sampling.png)
+![Adaptive Image Sampling overview](docs/Adaptive Image Sampling.png)
 ### 1) Adaptive Image Sampling (중복 제거·비용 절감)
 
 연속적인 이미지 스트림(Image Stream)이 입력되면, 1차로 Image Hash를 계산하고, 2차로 SSIM 유사도를 비교하여 95% 이상인 중복 프레임을 걸러냅니다. 이후 CNN Clustering을 통해 최종 대표 이미지를 선정하는 과정을 시각화했습니다.
@@ -73,7 +73,7 @@ flowchart TB
 * SSIM < 임계값(예: 0.95) 인 경우만 추출·전송 → 분석 비용과 지연 최소화
 
 
-![Architecture Overview](./docs/병렬 수집 분석 시스템.png)
+![Architecture Overview](docs/병렬 수집 분석 시스템.png)
 ### 2) 수집-분석 비동기 병렬 파이프라인
 15초 단위의 [window 1]에서 이미지를 수집(Collection Image)하는 동시에, 수집이 완료된 이전 15초의 데이터는 [analysis queue]로 전달되어 병렬로 처리됩니다. 이 구조 덕분에 수집과 분석이 동시에 진행되어 사용자의 체감 응답성을 높입니다.
 
@@ -81,7 +81,7 @@ flowchart TB
 * 수집과 분석의 동시 진행으로 체감 응답성을 확보
 
 
-![Architecture Overview](./docs/Multi Agent System 설계.png)
+![Architecture Overview](docs/Multi Agent System 설계.png)
 ### 3) Multi-Agent System (화면이해 → 계획 → 액션가이드)
 
 사용자의 목표(Text: Goal)는 Planner Agent로, 샘플링된 이미지는 Image Captioning LLM과 UI Analysis Agent로 전달됩니다. 이 에이전트들이 **Vector DB(Memory)**와 상호작용하며 계획을 수립하고(4. 현재 화면 기반 가이드 생성), 최종적으로 화면에 가이드(5. 화면 행동 가이드)를 제공하는 흐름을 나타냅니다.
