@@ -1,3 +1,5 @@
+![Omnione Badge](./docs/옴니원Badge_2025 오픈소스 개발자대회 우수작_이미지_260106.png)
+
 # MindTrack – Full System
 
 ![Architecture Overview](./docs/architecture_V2.png)
